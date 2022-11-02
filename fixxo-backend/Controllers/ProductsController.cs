@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using fixxo_backend.Data;
+using fixxo_backend.Models;
+using fixxo_backend.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using fixxo_backend.Data;
-using fixxo_backend.Models.Entities;
+using System.Diagnostics;
 
 namespace fixxo_backend.Controllers
 {
@@ -21,88 +19,116 @@ namespace fixxo_backend.Controllers
             _context = context;
         }
 
-        // GET: api/Products
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductEntity>>> GetProducts()
+        [HttpPost]
+        public async Task<IActionResult> Create(ProductRequest req)
         {
-            return await _context.Products.ToListAsync();
-        }
-
-        // GET: api/Products/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ProductEntity>> GetProductEntity(int id)
-        {
-            var productEntity = await _context.Products.FindAsync(id);
-
-            if (productEntity == null)
-            {
-                return NotFound();
-            }
-
-            return productEntity;
-        }
-
-        // PUT: api/Products/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProductEntity(int id, ProductEntity productEntity)
-        {
-            if (id != productEntity.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(productEntity).State = EntityState.Modified;
-
             try
             {
+                var categoryEntity = await _context.Categoríes.FirstOrDefaultAsync(x => x.Id == req.CategoryId);
+                if (categoryEntity == null)
+                    return new BadRequestObjectResult("Category not found");
+
+                _context.Add(new ProductEntity
+                {
+                    Name = req.Name,
+                    Price = req.Price,
+                    Description = req.Description,
+                    CategoryId = req.CategoryId
+                });
                 await _context.SaveChangesAsync();
+
+                return new OkResult();
+
             }
-            catch (DbUpdateConcurrencyException)
+            catch(Exception ex)
             {
-                if (!ProductEntityExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                Debug.WriteLine(ex.Message);
             }
-
-            return NoContent();
+            return new BadRequestResult();
         }
 
-        // POST: api/Products
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<ProductEntity>> PostProductEntity(ProductEntity productEntity)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            _context.Products.Add(productEntity);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetProductEntity", new { id = productEntity.Id }, productEntity);
-        }
-
-        // DELETE: api/Products/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProductEntity(int id)
-        {
-            var productEntity = await _context.Products.FindAsync(id);
-            if (productEntity == null)
+            try
             {
-                return NotFound();
+                var products = new List<ProductResponse>();
+                foreach (var product in await _context.Products.Include(x => x.Category).ToListAsync())
+                    products.Add(new ProductResponse
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Price = product.Price,
+                        CategoryId = product.CategoryId,
+                        CategoryName = product.Category.Name
+
+                    });
+
+                return new OkObjectResult(products);
             }
-
-            _context.Products.Remove(productEntity);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return new BadRequestResult();
         }
 
-        private bool ProductEntityExists(int id)
+        [HttpGet("{id}")]
+
+        public async Task<IActionResult> GetOne(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            try
+            {
+                var product = await _context.Products.Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
+                if (product != null)
+                    return new OkObjectResult(new ProductSingleResponse
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Price = product.Price,
+                        Description = product.Description,
+                        CategoryId = product.CategoryId,
+                        CategoryName = product.Category.Name
+                    });
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return new NotFoundResult();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, ProductRequest req)
+        {
+            try
+            {
+                var _product = await _context.Products.FindAsync(id);
+                _product.Name = req.Name;
+                _product.Price = req.Price;
+                _product.Description = req.Description;
+                _product.CategoryId = req.CategoryId;
+
+                _context.Entry(_product).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                var product = await _context.Products.Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == _product.Id);
+                return new OkObjectResult(new ProductResponse
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    CategoryId = product.CategoryId,
+                    CategoryName = product.Category.Name
+                });
+
+
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return new NotFoundResult();
         }
     }
 }
