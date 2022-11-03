@@ -1,6 +1,8 @@
-﻿namespace fixxo_backend.Models.Entities
+﻿using fixxo_backend.Models.Entities;
+
+namespace fixxo_backend.Models
 {
-    
+
     public class ProductColorRequest
     {
         public string ImgUrl { get; set; }

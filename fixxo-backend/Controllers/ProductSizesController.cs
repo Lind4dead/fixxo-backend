@@ -25,6 +25,13 @@ namespace fixxo_backend.Controllers
         {
             try
             {
+                var _size = await _context.Sizes.FindAsync(req.ProductId);
+                if(req.Size == _size.Size)
+                {
+                    return new BadRequestObjectResult("Size already exists on product");
+                }
+                
+
                 var _productSize = new ProductSizeEntity
                 {
                     Size = req.Size,
