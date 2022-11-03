@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fixxo_backend.Data;
 
@@ -11,9 +12,10 @@ using fixxo_backend.Data;
 namespace fixxo_backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221103091339_product colors")]
+    partial class productcolors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,12 +77,12 @@ namespace fixxo_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductEntityId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductEntityId");
 
                     b.ToTable("Colors");
                 });
@@ -119,36 +121,11 @@ namespace fixxo_backend.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("fixxo_backend.Models.Entities.ProductSizeEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Sizes");
-                });
-
             modelBuilder.Entity("fixxo_backend.Models.Entities.ProductColorEntity", b =>
                 {
-                    b.HasOne("fixxo_backend.Models.Entities.ProductEntity", "Product")
+                    b.HasOne("fixxo_backend.Models.Entities.ProductEntity", null)
                         .WithMany("Colors")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
+                        .HasForeignKey("ProductEntityId");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.ProductEntity", b =>
@@ -166,17 +143,6 @@ namespace fixxo_backend.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("fixxo_backend.Models.Entities.ProductSizeEntity", b =>
-                {
-                    b.HasOne("fixxo_backend.Models.Entities.ProductEntity", "Product")
-                        .WithMany("Sizes")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("fixxo_backend.Models.Entities.CategoryEntity", b =>
                 {
                     b.Navigation("Products");
@@ -190,8 +156,6 @@ namespace fixxo_backend.Migrations
             modelBuilder.Entity("fixxo_backend.Models.Entities.ProductEntity", b =>
                 {
                     b.Navigation("Colors");
-
-                    b.Navigation("Sizes");
                 });
 #pragma warning restore 612, 618
         }

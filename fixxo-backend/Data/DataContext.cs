@@ -11,6 +11,8 @@ namespace fixxo_backend.Data
         }
 
         public DbSet<ProductEntity> Products { get; set; }
+        public DbSet<ProductColorEntity> Colors { get; set; }
+        public DbSet<ProductSizeEntity> Sizes { get; set; }
         public DbSet<CategoryEntity> Categoríes { get; set; }
         public DbSet<OrderEntity> Orders { get; set; }
 

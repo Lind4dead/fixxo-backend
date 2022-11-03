@@ -11,27 +11,26 @@ namespace fixxo_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductColorsController : ControllerBase
+    public class ProductSizesController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public ProductColorsController(DataContext context)
+        public ProductSizesController(DataContext context)
         {
             _context = context;
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Create(ProductColorRequest req)
+        public async Task<IActionResult> Create(ProductSizeRequest req)
         {
             try
             {
-                _context.Add(new ProductColorEntity
+                var _productSize = new ProductSizeEntity
                 {
-                    Color = req.Color,
-                    ImgUrl = req.ImgUrl,
+                    Size = req.Size,
                     ProductId = req.ProductId
-                });
+                };
+                _context.Add(_productSize);
                 await _context.SaveChangesAsync();
 
                 return new OkResult();
@@ -46,16 +45,15 @@ namespace fixxo_backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var _sizes = new List<ProductColorResponse>();
+            var _sizes = new List<ProductSizeResponse>();
 
-            foreach (var color in await _context.Colors.Include(x => x.Product).ToListAsync())
-                _sizes.Add(new ProductColorResponse
+            foreach (var size in await _context.Sizes.Include(x => x.Product).ToListAsync())
+                _sizes.Add(new ProductSizeResponse
                 {
-                    Id = color.Id,
-                    ColorName = color.Color.GetDisplayName(),
-                    ImgUrl = color.ImgUrl,
-                    ProductId = color.ProductId,
-                    ProductName = color.Product.Name
+                    Id = size.Id,
+                    Size = size.Size.GetDisplayName(),
+                    ProductId = size.ProductId,
+                    ProductName = size.Product.Name
 
                 });
 

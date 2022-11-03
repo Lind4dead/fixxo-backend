@@ -21,6 +21,8 @@ namespace fixxo_backend.Models.Entities
 
         public ICollection<ProductColorEntity> Colors { get; set; }
 
+        public ICollection<ProductSizeEntity> Sizes { get; set; }
+
         public int CategoryId { get; set; }
 
         public virtual CategoryEntity Category { get; set; }

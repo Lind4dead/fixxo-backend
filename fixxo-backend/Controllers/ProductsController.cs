@@ -4,6 +4,7 @@ using fixxo_backend.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Extensions;
 using System.Diagnostics;
 
 namespace fixxo_backend.Controllers
@@ -79,6 +80,21 @@ namespace fixxo_backend.Controllers
         {
             try
             {
+                var _colors = new List<ProductColorResponse>();
+                foreach(var color in await _context.Colors.Include(x => x.Product).ToListAsync())
+                {
+                    if(color.ProductId == id)
+                    {
+                        _colors.Add(new ProductColorResponse
+                        {
+                            Id = color.Id,
+                            ColorName = color.Color.GetDisplayName(),
+                            ProductName = color.Product.Name,
+                            ProductId = color.ProductId
+                        });
+                    }
+                }
+
                 var product = await _context.Products.Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
                 if (product != null)
                     return new OkObjectResult(new ProductSingleResponse
@@ -87,6 +103,7 @@ namespace fixxo_backend.Controllers
                         Name = product.Name,
                         Price = product.Price,
                         Description = product.Description,
+                        Colors = _colors,
                         CategoryId = product.CategoryId,
                         CategoryName = product.Category.Name
                     });
