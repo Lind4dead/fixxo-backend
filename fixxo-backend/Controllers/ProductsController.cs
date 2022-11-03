@@ -80,17 +80,30 @@ namespace fixxo_backend.Controllers
         {
             try
             {
-                var _colors = new List<ProductColorResponse>();
+                var _colors = new List<ProductSingleColorResponse>();
                 foreach(var color in await _context.Colors.Include(x => x.Product).ToListAsync())
                 {
                     if(color.ProductId == id)
                     {
-                        _colors.Add(new ProductColorResponse
+                        _colors.Add(new ProductSingleColorResponse
                         {
-                            Id = color.Id,
-                            ColorName = color.Color.GetDisplayName(),
-                            ProductName = color.Product.Name,
-                            ProductId = color.ProductId
+                            
+                            ColorName = color.Color.GetDisplayName()
+                            
+                        });
+                    }
+                }
+
+                var _sizes = new List<ProductSingleSizeResponse>();
+                foreach (var size in await _context.Sizes.Include(x => x.Product).ToListAsync())
+                {
+                    if (size.ProductId == id)
+                    {
+                        _sizes.Add(new ProductSingleSizeResponse
+                        {
+
+                            Size = size.Size.GetDisplayName()
+
                         });
                     }
                 }
@@ -104,6 +117,7 @@ namespace fixxo_backend.Controllers
                         Price = product.Price,
                         Description = product.Description,
                         Colors = _colors,
+                        Sizes = _sizes,
                         CategoryId = product.CategoryId,
                         CategoryName = product.Category.Name
                     });
