@@ -11,21 +11,25 @@ namespace fixxo_backend.Models.Entities
 
         [Required]
         [Column(TypeName = "nvarchar(200)")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [Required]
         [Column(TypeName = "money")]
         public decimal Price { get; set; }
 
-        public string Description { get; set; }
-
-        public ICollection<ProductColorEntity> Colors { get; set; }
+        public string Description { get; set; } = null!;
 
         public int CategoryId { get; set; }
 
+
+
+
+        public ICollection<ProductColorEntity> Colors { get; set; }
+               
+
         public virtual CategoryEntity Category { get; set; }
 
-
+        
 
 
 

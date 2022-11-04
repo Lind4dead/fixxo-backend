@@ -7,13 +7,17 @@ namespace fixxo_backend.Models.Entities
     {
         [Key]
         public int Id { get; set; }
-        public ICollection<ProductEntity> products { get; set; }
+        [Required]
+        public int ProductId { get; set; }
+       
         [Required]
         public string Email { get; set; }
         [Required]
-        public string Adress { get; set; }
+        public string Address { get; set; }
 
+        public DateTime CreatedAt { get; set; }
 
+        public ICollection<ProductEntity> Products { get; set; }
 
     }
 }
