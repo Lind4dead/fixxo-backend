@@ -64,19 +64,28 @@ namespace fixxo_backend.Controllers
             try
             {
                 var products = new List<ProductResponse>();
-                foreach (var product in await _context.Products.Include(x => x.Category).ToListAsync())
+                foreach (var product in await _context.Products.Include(x => x.Category).Include(x => x.Colors).ToListAsync())
+                {
+
+                    var _color = await _context.Colors.FirstOrDefaultAsync(x => x.ProductId == product.Id);
+                    if(_color != null)
+                    {
+
                     products.Add(new ProductResponse
                     {
                         Id = product.Id,
                         Name = product.Name,
                         Price = product.Price,
                         CategoryId = product.CategoryId,
-                        CategoryName = product.Category.Name
+                        CategoryName = product.Category.Name,
+                        ImgUrl = _color.ImgUrl
 
 
 
 
                     });
+                    }
+                }
 
                 return new OkObjectResult(products);
             }
