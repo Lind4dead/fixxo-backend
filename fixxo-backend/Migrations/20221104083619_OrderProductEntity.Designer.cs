@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fixxo_backend.Data;
 
@@ -11,9 +12,10 @@ using fixxo_backend.Data;
 namespace fixxo_backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221104083619_OrderProductEntity")]
+    partial class OrderProductEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,33 +23,6 @@ namespace fixxo_backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("fixxo_backend.Models.Entities.AdditionalInformationEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ClassificationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClassificationId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("AdditionalInformations");
-                });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.CategoryEntity", b =>
                 {
@@ -63,24 +38,7 @@ namespace fixxo_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("fixxo_backend.Models.Entities.ClassificationEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Classifications");
+                    b.ToTable("Categoríes");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.OrderEntity", b =>
@@ -125,14 +83,14 @@ namespace fixxo_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductEntityId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductEntityId");
 
-                    b.ToTable("Colors");
+                    b.ToTable("ProductColorEntity");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.ProductEntity", b =>
@@ -169,55 +127,11 @@ namespace fixxo_backend.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("fixxo_backend.Models.Entities.ProductSizeEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Sizes");
-                });
-
-            modelBuilder.Entity("fixxo_backend.Models.Entities.AdditionalInformationEntity", b =>
-                {
-                    b.HasOne("fixxo_backend.Models.Entities.ClassificationEntity", "Classification")
-                        .WithMany("AdditionalInformation")
-                        .HasForeignKey("ClassificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("fixxo_backend.Models.Entities.ProductEntity", "Product")
-                        .WithMany("AdditionalInformation")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Classification");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("fixxo_backend.Models.Entities.ProductColorEntity", b =>
                 {
-                    b.HasOne("fixxo_backend.Models.Entities.ProductEntity", "Product")
+                    b.HasOne("fixxo_backend.Models.Entities.ProductEntity", null)
                         .WithMany("Colors")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
+                        .HasForeignKey("ProductEntityId");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.ProductEntity", b =>
@@ -235,25 +149,9 @@ namespace fixxo_backend.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("fixxo_backend.Models.Entities.ProductSizeEntity", b =>
-                {
-                    b.HasOne("fixxo_backend.Models.Entities.ProductEntity", "Product")
-                        .WithMany("Sizes")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("fixxo_backend.Models.Entities.CategoryEntity", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("fixxo_backend.Models.Entities.ClassificationEntity", b =>
-                {
-                    b.Navigation("AdditionalInformation");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.OrderEntity", b =>
@@ -263,11 +161,7 @@ namespace fixxo_backend.Migrations
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.ProductEntity", b =>
                 {
-                    b.Navigation("AdditionalInformation");
-
                     b.Navigation("Colors");
-
-                    b.Navigation("Sizes");
                 });
 #pragma warning restore 612, 618
         }

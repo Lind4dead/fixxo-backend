@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Extensions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
+
 using System.Diagnostics;
 
 namespace fixxo_backend.Controllers
@@ -35,7 +38,14 @@ namespace fixxo_backend.Controllers
                     Price = req.Price,
                     Description = req.Description,
                     CategoryId = req.CategoryId
-                });
+
+
+      
+
+
+
+
+    });
                 await _context.SaveChangesAsync();
 
                 return new OkResult();
@@ -62,6 +72,9 @@ namespace fixxo_backend.Controllers
                         Price = product.Price,
                         CategoryId = product.CategoryId,
                         CategoryName = product.Category.Name
+
+
+
 
                     });
 
