@@ -27,6 +27,7 @@ namespace fixxo_backend.Models.Entities
 
         public virtual CategoryEntity Category { get; set; }
 
+        public virtual ICollection<AdditionalInformationEntity> AdditionalInformation { get; set; }
 
 
 

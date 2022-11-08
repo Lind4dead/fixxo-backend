@@ -25,7 +25,7 @@ namespace fixxo_backend.Controllers
         {
             try
             {
-                var categoryEntity = await _context.Categoríes.FirstOrDefaultAsync(x => x.Id == req.CategoryId);
+                var categoryEntity = await _context.Categories.FirstOrDefaultAsync(x => x.Id == req.CategoryId);
                 if (categoryEntity == null)
                     return new BadRequestObjectResult("Category not found");
 
@@ -86,10 +86,9 @@ namespace fixxo_backend.Controllers
                     if(color.ProductId == id)
                     {
                         _colors.Add(new ProductSingleColorResponse
-                        {
-                            
-                            ColorName = color.Color.GetDisplayName()
-                            
+                        {                          
+                            ColorName = color.Color.GetDisplayName(),
+                            ImgUrl = color.ImgUrl 
                         });
                     }
                 }
@@ -101,9 +100,20 @@ namespace fixxo_backend.Controllers
                     {
                         _sizes.Add(new ProductSingleSizeResponse
                         {
-
                             Size = size.Size.GetDisplayName()
+                        });
+                    }
+                }
 
+                var _info = new List<AdditionalInformationResponse>();
+                foreach(var info in await _context.AdditionalInformations.Include(x => x.Classification).ToListAsync())
+                {
+                    if(info.ProductId == id)
+                    {
+                        _info.Add(new AdditionalInformationResponse
+                        {
+                            Data = info.Data,
+                            Classification = info.Classification.Name
                         });
                     }
                 }
@@ -118,6 +128,7 @@ namespace fixxo_backend.Controllers
                         Description = product.Description,
                         Colors = _colors,
                         Sizes = _sizes,
+                        AdditionalInformationResponses = _info,
                         CategoryId = product.CategoryId,
                         CategoryName = product.Category.Name
                     });

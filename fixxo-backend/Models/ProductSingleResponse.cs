@@ -8,6 +8,7 @@
         public string Description { get; set; }
         public ICollection<ProductSingleColorResponse> Colors { get; set; }
         public ICollection<ProductSingleSizeResponse> Sizes { get; set; }
+        public ICollection<AdditionalInformationResponse> AdditionalInformationResponses { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
     }

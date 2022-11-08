@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fixxo_backend.Data;
 
@@ -11,9 +12,10 @@ using fixxo_backend.Data;
 namespace fixxo_backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221108082143_added additional information")]
+    partial class addedadditionalinformation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +48,7 @@ namespace fixxo_backend.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("AdditionalInformations");
+                    b.ToTable("AdditionalInformationEntity");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.CategoryEntity", b =>
@@ -63,7 +65,7 @@ namespace fixxo_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categoríes");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.ClassificationEntity", b =>
@@ -80,7 +82,7 @@ namespace fixxo_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Classifications");
+                    b.ToTable("ClassificationEntity");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.OrderEntity", b =>
