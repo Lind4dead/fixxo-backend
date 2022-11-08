@@ -16,5 +16,8 @@
         public int Id { get; set; }
         public string ImgUrl { get; set; }
         public virtual Colors Color { get; set; }
+        public int ProductId { get; set; }
+        public ProductEntity Product { get; set; }
+
     }
 }

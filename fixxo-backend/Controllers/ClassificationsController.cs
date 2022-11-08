@@ -3,7 +3,6 @@ using fixxo_backend.Models;
 using fixxo_backend.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -11,26 +10,27 @@ namespace fixxo_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class ClassificationsController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public CategoriesController(DataContext context)
+        public ClassificationsController(DataContext context)
         {
             _context = context;
         }
+
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryRequest req)
+        public async Task<IActionResult> Create(ClassificationRequest req)
         {
             try
             {
-                var categoryEntity = new CategoryEntity { Name = req.Name };
-                _context.Categories.Add(categoryEntity);
+                _context.Add(new ClassificationEntity
+                {
+                    Name = req.Name
+                });
                 await _context.SaveChangesAsync();
 
-                var categoryResponse = new CategoryResponse { CategoryId = categoryEntity.Id, CategoryName = categoryEntity.Name };
-
-                return new OkObjectResult(categoryResponse);
+                return new OkResult();
             }
             catch(Exception ex)
             {
@@ -44,11 +44,11 @@ namespace fixxo_backend.Controllers
         {
             try
             {
-                var categories = new List<CategoryResponse>();
-                foreach(var category in await _context.Categories.ToListAsync())
-                    categories.Add(new CategoryResponse { CategoryId = category.Id, CategoryName = category.Name });
+                var classes = new List<ClassificationEntity>();
+                foreach (var _class in await _context.Classifications.ToListAsync())
+                    classes.Add(_class);
 
-                return new OkObjectResult(categories);
+                return new OkObjectResult(classes);
             }
             catch(Exception ex)
             {

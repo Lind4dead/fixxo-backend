@@ -4,8 +4,10 @@ using fixxo_backend.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Extensions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using System.Diagnostics;
 
 namespace fixxo_backend.Controllers
@@ -26,7 +28,7 @@ namespace fixxo_backend.Controllers
         {
             try
             {
-                var categoryEntity = await _context.Categoríes.FirstOrDefaultAsync(x => x.Id == req.CategoryId);
+                var categoryEntity = await _context.Categories.FirstOrDefaultAsync(x => x.Id == req.CategoryId);
                 if (categoryEntity == null)
                     return new BadRequestObjectResult("Category not found");
 
@@ -91,6 +93,44 @@ namespace fixxo_backend.Controllers
         {
             try
             {
+                var _colors = new List<ProductSingleColorResponse>();
+                foreach(var color in await _context.Colors.Include(x => x.Product).ToListAsync())
+                {
+                    if(color.ProductId == id)
+                    {
+                        _colors.Add(new ProductSingleColorResponse
+                        {                          
+                            ColorName = color.Color.GetDisplayName(),
+                            ImgUrl = color.ImgUrl 
+                        });
+                    }
+                }
+
+                var _sizes = new List<ProductSingleSizeResponse>();
+                foreach (var size in await _context.Sizes.Include(x => x.Product).ToListAsync())
+                {
+                    if (size.ProductId == id)
+                    {
+                        _sizes.Add(new ProductSingleSizeResponse
+                        {
+                            Size = size.Size.GetDisplayName()
+                        });
+                    }
+                }
+
+                var _info = new List<AdditionalInformationResponse>();
+                foreach(var info in await _context.AdditionalInformations.Include(x => x.Classification).ToListAsync())
+                {
+                    if(info.ProductId == id)
+                    {
+                        _info.Add(new AdditionalInformationResponse
+                        {
+                            Data = info.Data,
+                            Classification = info.Classification.Name
+                        });
+                    }
+                }
+
                 var product = await _context.Products.Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
                 if (product != null)
                     return new OkObjectResult(new ProductSingleResponse
@@ -99,6 +139,9 @@ namespace fixxo_backend.Controllers
                         Name = product.Name,
                         Price = product.Price,
                         Description = product.Description,
+                        Colors = _colors,
+                        Sizes = _sizes,
+                        AdditionalInformationResponses = _info,
                         CategoryId = product.CategoryId,
                         CategoryName = product.Category.Name
                     });

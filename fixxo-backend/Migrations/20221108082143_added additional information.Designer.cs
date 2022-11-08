@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fixxo_backend.Data;
 
@@ -11,9 +12,10 @@ using fixxo_backend.Data;
 namespace fixxo_backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221108082143_added additional information")]
+    partial class addedadditionalinformation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +48,7 @@ namespace fixxo_backend.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("AdditionalInformations");
+                    b.ToTable("AdditionalInformationEntity");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.CategoryEntity", b =>
@@ -63,7 +65,7 @@ namespace fixxo_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categoríes");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.ClassificationEntity", b =>
@@ -80,7 +82,7 @@ namespace fixxo_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Classifications");
+                    b.ToTable("ClassificationEntity");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.OrderEntity", b =>
@@ -91,19 +93,13 @@ namespace fixxo_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Address")
+                    b.Property<string>("Adress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -229,7 +225,7 @@ namespace fixxo_backend.Migrations
                         .IsRequired();
 
                     b.HasOne("fixxo_backend.Models.Entities.OrderEntity", null)
-                        .WithMany("Products")
+                        .WithMany("products")
                         .HasForeignKey("OrderEntityId");
 
                     b.Navigation("Category");
@@ -258,7 +254,7 @@ namespace fixxo_backend.Migrations
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.OrderEntity", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("products");
                 });
 
             modelBuilder.Entity("fixxo_backend.Models.Entities.ProductEntity", b =>

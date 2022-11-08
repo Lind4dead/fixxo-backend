@@ -3,7 +3,7 @@ using fixxo_backend.Models;
 using fixxo_backend.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -11,26 +11,30 @@ namespace fixxo_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class AdditionalInformationsController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public CategoriesController(DataContext context)
+        public AdditionalInformationsController(DataContext context)
         {
             _context = context;
         }
+
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryRequest req)
+        public async Task<IActionResult> Create(AdditionalInformationRequest req)
         {
             try
             {
-                var categoryEntity = new CategoryEntity { Name = req.Name };
-                _context.Categories.Add(categoryEntity);
+                _context.Add(new AdditionalInformationEntity
+                {
+                    Data = req.Data,
+                    ProductId = req.ProductId,
+                    ClassificationId = req.ClassificationId
+                });
                 await _context.SaveChangesAsync();
 
-                var categoryResponse = new CategoryResponse { CategoryId = categoryEntity.Id, CategoryName = categoryEntity.Name };
-
-                return new OkObjectResult(categoryResponse);
+                return new OkResult();
+                
             }
             catch(Exception ex)
             {
@@ -44,11 +48,11 @@ namespace fixxo_backend.Controllers
         {
             try
             {
-                var categories = new List<CategoryResponse>();
-                foreach(var category in await _context.Categories.ToListAsync())
-                    categories.Add(new CategoryResponse { CategoryId = category.Id, CategoryName = category.Name });
+                var infos = new List<AdditionalInformationEntity>();
+                foreach (var info in await _context.AdditionalInformations.ToListAsync())
+                    infos.Add(info);
 
-                return new OkObjectResult(categories);
+                return new OkObjectResult(infos);
             }
             catch(Exception ex)
             {
