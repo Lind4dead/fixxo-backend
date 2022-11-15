@@ -31,6 +31,7 @@ namespace fixxo_backend.Controllers
                 var categoryEntity = await _context.Categories.FirstOrDefaultAsync(x => x.Id == req.CategoryId);
                 if (categoryEntity == null)
                     return new BadRequestObjectResult("Category not found");
+                
 
                 _context.Add(new ProductEntity
                 {
@@ -46,6 +47,15 @@ namespace fixxo_backend.Controllers
 
 
     });
+                await _context.SaveChangesAsync();
+                _context.Add(new ProductColorEntity
+                {
+
+                    Color = req.Color.Color,
+                    ImgUrl = req.Color.ImgUrl,
+                    ProductId = req.Color.ProductId
+                });
+
                 await _context.SaveChangesAsync();
 
                 return new OkResult();
@@ -70,7 +80,7 @@ namespace fixxo_backend.Controllers
                     var _color = await _context.Colors.FirstOrDefaultAsync(x => x.ProductId == product.Id);
                     if(_color != null)
                     {
-
+                        
                     products.Add(new ProductResponse
                     {
                         Id = product.Id,
