@@ -12,4 +12,9 @@
         public ICollection<OrderEntity> OrderEntity { get; set; }
         public ICollection<ProductEntity> Product { get; set; }
     }
+
+
+
+
+
 }

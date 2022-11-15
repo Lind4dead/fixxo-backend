@@ -17,6 +17,6 @@ namespace fixxo_backend.Data
         public DbSet<AdditionalInformationEntity> AdditionalInformations { get; set; }
         public DbSet<ClassificationEntity> Classifications { get; set; }
         public DbSet<OrderEntity> Orders { get; set; }
-
+        public DbSet<OrderProductEntity> OrderProduct { get; set; }
     }
 }
