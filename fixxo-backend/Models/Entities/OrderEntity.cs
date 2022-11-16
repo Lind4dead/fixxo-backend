@@ -7,8 +7,6 @@ namespace fixxo_backend.Models.Entities
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        public int ProductId { get; set; }
        
         [Required]
         public string Email { get; set; }
@@ -17,7 +15,9 @@ namespace fixxo_backend.Models.Entities
 
         public DateTime CreatedAt { get; set; }
 
-        public ICollection<ProductEntity> Products { get; set; }
+        public ICollection<OrderProductEntity> Products { get; set; }
+        public decimal TotalPrice { get; set; }
+        public int TotalQuantity { get; set; }
 
     }
 }

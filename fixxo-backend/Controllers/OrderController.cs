@@ -19,7 +19,7 @@ namespace fixxo_backend.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        /* [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -99,7 +99,7 @@ namespace fixxo_backend.Controllers
                 Debug.WriteLine(ex.Message);
             }
             return new NotFoundResult();
-        }
+        } */
 
     }
 }

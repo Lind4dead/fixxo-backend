@@ -9,8 +9,9 @@
         public int ProductId { get; set; }
         public double Price { get; set; }
         public int Total { get; set; }
-        public ICollection<OrderEntity> OrderEntity { get; set; }
-        public ICollection<ProductEntity> Product { get; set; }
+        public OrderEntity Order { get; set; }
+        public ProductEntity Product { get; set; }
+        public int Quantity { get; set; }
     }
 
 

@@ -20,7 +20,7 @@ namespace fixxo_backend.Controllers
         }
 
   
-        [HttpPost]
+        /* [HttpPost]
         public async Task<IActionResult> Create(OrderProductEntityRequest model)
         {
             if (ModelState.IsValid)
@@ -120,6 +120,6 @@ namespace fixxo_backend.Controllers
 
             return new NotFoundResult();
         }
-
-    }
+        */
+    } 
 }
